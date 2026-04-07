@@ -28,7 +28,7 @@ def generate_daily_report():
     Simulate reading from the Delta Lake table and generating a summary.
     In a real scenario, we'd use a Trino or Spark operator here.
     """
-    delta_path = "/Users/macmin/Projects/Github2/ai_projects/railstream_5000/data/gold/telemetry_alerts"
+    delta_path = "/Users/macmin/Projects/Github2/ai_projects/SignalPath/data/gold/telemetry_alerts"
     
     if not os.path.exists(delta_path):
         print(f"⚠️  Data path {delta_path} not found. No maintenance events to report.")
@@ -40,7 +40,7 @@ def generate_daily_report():
     
     # Placeholder for actual data processing logic
     # For now, we'll log the audit start
-    with open("/Users/macmin/Projects/Github2/ai_projects/railstream_5000/audit_log.txt", "a") as f:
+    with open("/Users/macmin/Projects/Github2/ai_projects/SignalPath/audit_log.txt", "a") as f:
         f.write(f"[{datetime.now()}] Audit run completed for {delta_path}\n")
 
 run_audit = PythonOperator(

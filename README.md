@@ -1,4 +1,4 @@
-# AuraRail: Real-Time Train Telemetry
+# SignalPath: Real-Time Train Telemetry
 
 A high-fidelity, event-driven data platform simulating BNSF-style train telemetry (GPS, Speed, Bearing Temp) using **Kafka**, **Spark Streaming**, and **Airflow**.
 

@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+*.env
+
+# Spark
+checkpoint/
+spark-warehouse/
+
+# Data
+data/
+*.db
+*.log
+audit_log.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# MacOS
+.DS_Store

@@ -1,0 +1,16 @@
+[project]
+name = "aurarail"
+version = "0.1.0"
+description = "Real-time train telemetry governance using Kafka, Spark, and Airflow"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "certifi>=2026.2.25",
+    "confluent-kafka>=2.14.0",
+    "fastavro>=1.12.1",
+    "pandas>=3.0.2",
+    "pyspark>=4.1.1",
+    "delta-spark>=3.2.0",
+    "apache-airflow>=2.10.0",
+    "python-dotenv>=1.0.1",
+]

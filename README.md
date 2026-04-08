@@ -1,6 +1,6 @@
-# SignalPath: Real-Time Train Telemetry
+# SignalPath: Real-Time Fleet Telemetry
 
-A high-fidelity, event-driven data platform simulating BNSF-style train telemetry (GPS, Speed, Bearing Temp) using **Kafka**, **Spark Streaming**, and **Airflow**.
+A high-fidelity, event-driven data platform simulating industrial fleet telemetry (GPS, Speed, Bearing Temp) using **Kafka**, **Spark Streaming**, and **Airflow**.
 
 ## 🏗 Architecture
 1. **Producer (`src/telemetry_producer.py`)**: Simulates synthetic train events and publishes to a Kafka topic. Supports a "Mock Mode" for local testing if credentials are missing.

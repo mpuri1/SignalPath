@@ -52,7 +52,7 @@ def main():
         print(f"🚀 Initializing Kafka Producer for {conf['bootstrap.servers']}")
         producer = Producer(conf)
 
-    trains = ["BNSF-101", "BNSF-202", "BNSF-303", "UP-909"]
+    trains = ["EXPRESS-101", "EXPRESS-202", "FREIGHT-303", "FREIGHT-909"]
     topic = "rail_telemetry"
 
     try:

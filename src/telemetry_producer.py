@@ -5,6 +5,7 @@ import uuid
 from datetime import datetime
 from confluent_kafka import Producer
 import os
+import hashlib
 from dotenv import load_dotenv
 
 # Load credentials from .env
@@ -17,10 +18,22 @@ def delivery_report(err, msg):
     else:
         print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
+def get_variant(entity_id, experiment_id="MAINTENANCE_LOGIC_2026"):
+    """
+    Deterministically assign a variant (CONTROL or TREATMENT) based on entity_id.
+    Ensures a train stays in the same group throughout the experiment.
+    """
+    hash_val = int(hashlib.md5(f"{experiment_id}:{entity_id}".encode()).hexdigest(), 16)
+    return "TREATMENT" if hash_val % 2 == 0 else "CONTROL"
+
 def generate_telemetry(train_id):
     """
     Simulate train telemetry: JSON event with speed, location, and sensor data.
+    Includes experimentation metadata for A/B testing.
     """
+    experiment_id = "MAINTENANCE_LOGIC_2026"
+    variant_id = get_variant(train_id, experiment_id)
+    
     return {
         "event_id": str(uuid.uuid4()),
         "train_id": train_id,
@@ -30,7 +43,9 @@ def generate_telemetry(train_id):
         "longitude": round(random.uniform(-125.0, -70.0), 6),
         "bearing_temp_f": round(random.uniform(90.0, 160.0), 2),
         "fuel_level_pct": round(random.uniform(20.0, 100.0), 2),
-        "status": random.choice(["MOVING", "STATIONARY", "MAINTENANCE"])
+        "status": random.choice(["MOVING", "STATIONARY", "MAINTENANCE"]),
+        "experiment_id": experiment_id,
+        "variant_id": variant_id
     }
 
 def main():

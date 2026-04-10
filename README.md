@@ -1,11 +1,18 @@
-# SignalPath: Real-Time Fleet Telemetry
+# SignalPath: Real-Time Fleet Telemetry & Semantic Mesh
 
-A high-fidelity, event-driven data platform simulating industrial fleet telemetry (GPS, Speed, Bearing Temp) using **Kafka**, **Spark Streaming**, and **Airflow**.
+A high-fidelity, event-driven data platform for industrial fleet telemetry (GPS, Speed, Bearing Temp), architected as a **Data Mesh** node using **Kafka**, **Spark Streaming**, and a **Semantic Layer**.
 
 ## 🏗 Architecture
-1. **Producer (`src/telemetry_producer.py`)**: Simulates synthetic train events and publishes to a Kafka topic. Supports a "Mock Mode" for local testing if credentials are missing.
-2. **Processor (`src/stream_processor.py`)**: A PySpark Streaming job that consumes from Kafka, calculates 10-minute windowed averages for bearing temperatures, and writes to **Delta Lake** (Silver/Gold layers).
-3. **Orchestration (`dags/rail_maintenance_dag.py`)**: An Airflow DAG that schedules daily maintenance audits to scan for sensor anomalies in the Gold table.
+1. **Producer (`src/telemetry_producer.py`)**: Simulates high-throughput synthetic fleet events.
+2. **Processor (`src/stream_processor.py`)**: A PySpark Structured Streaming job that performs windowed aggregations and writes to **Delta Lake** (Medallion Architecture).
+3. **Semantic Layer (`src/semantic_layer.py`)**: Transforms Silver-layer telemetry into **Trusted Data Products** (Gold semantic models) optimized for AI/ML consumption.
+4. **Orchestration (`dags/rail_maintenance_dag.py`)**: An Airflow DAG orchestrating daily maintenance audits across the mesh.
+
+## 🧪 Experimentation Infrastructure (A/B Testing)
+SignalPath features a built-in **Experimentation Backbone** allowing engineers to test new predictive maintenance algorithms side-by-side:
+- **Deterministic Assignment**: Assets are consistently assigned to `CONTROL` or `TREATMENT` groups via hashing.
+- **Side-by-Side Execution**: The Spark processor evaluates multiple models in parallel for the same telemetry stream.
+- **Metric Attribution**: The Semantic Layer generates a **Variant Performance Report**, comparing alert accuracy and lead times between models.
 
 ## 🚀 Getting Started
 

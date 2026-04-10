@@ -2,7 +2,7 @@ import json
 import time
 import random
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer
 import os
 import hashlib
@@ -37,7 +37,7 @@ def generate_telemetry(train_id):
     return {
         "event_id": str(uuid.uuid4()),
         "train_id": train_id,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "speed_mph": round(random.uniform(30.0, 75.0), 2),
         "latitude": round(random.uniform(30.0, 48.0), 6),
         "longitude": round(random.uniform(-125.0, -70.0), 6),

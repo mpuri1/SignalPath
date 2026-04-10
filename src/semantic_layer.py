@@ -1,6 +1,6 @@
 import os
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, avg, count, when, current_timestamp, desc
+from pyspark.sql.functions import col, avg, count, when, current_timestamp, desc, first
 from delta import configure_spark_with_delta_pip
 from dotenv import load_dotenv
 
@@ -39,8 +39,9 @@ def main():
     experiment_summary = alerts_df.groupBy("variant_id").agg(
         count("*").alias("total_windows"),
         avg(col("is_alert").cast("int")).alias("alert_rate"),
-        avg("avg_temp").alias("mean_window_temp")
-    ).withColumn("experiment_id", col("variant_id")) # Placeholder for actual joined ID
+        avg("avg_temp").alias("mean_window_temp"),
+        first("experiment_id").alias("experiment_id")
+    )
 
     # 2. Add AI-Readiness Metadata
     final_df = experiment_summary.withColumn("processed_at", current_timestamp())

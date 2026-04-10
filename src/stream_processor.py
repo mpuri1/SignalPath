@@ -1,7 +1,7 @@
 import os
 import sys
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col, avg, window, current_timestamp, when
+from pyspark.sql.functions import from_json, col, avg, max, window, current_timestamp, when
 from pyspark.sql.types import StructType, StringType, DoubleType, TimestampType
 from delta import configure_spark_with_delta_pip
 from dotenv import load_dotenv

@@ -23,7 +23,7 @@ def get_variant(entity_id, experiment_id="MAINTENANCE_LOGIC_2026"):
     Deterministically assign a variant (CONTROL or TREATMENT) based on entity_id.
     Ensures a train stays in the same group throughout the experiment.
     """
-    hash_val = int(hashlib.md5(f"{experiment_id}:{entity_id}".encode()).hexdigest(), 16)
+    hash_val = int(hashlib.md5(f"{experiment_id}:{entity_id}".encode(), usedforsecurity=False).hexdigest(), 16)
     return "TREATMENT" if hash_val % 2 == 0 else "CONTROL"
 
 def generate_telemetry(train_id):

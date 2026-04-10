@@ -79,7 +79,7 @@ def main():
             max("bearing_temp_f").alias("max_temp")
         ) \
         .withColumn("is_alert", 
-            when(col("variant_id") == "CONTROL", col("avg_temp") > 140.0)
+            when(col("variant_id") == "CONTROL", col("max_temp") > 140.0)
             .when(col("variant_id") == "TREATMENT", col("max_temp") > (col("avg_temp") * 1.1))
             .otherwise(False)
         ) \
@@ -93,9 +93,10 @@ def main():
         .start("./data/silver/telemetry_raw")
 
     # Write Result 2: Delta Lake Gold Table (Maintenance Alerts)
+    # Using 'update' mode to surface results without waiting for the watermark to close the window
     gold_query = alerts_df.writeStream \
         .format("delta") \
-        .outputMode("append") \
+        .outputMode("update") \
         .option("checkpointLocation", "./checkpoint/gold_alerts") \
         .start("./data/gold/telemetry_alerts")
 

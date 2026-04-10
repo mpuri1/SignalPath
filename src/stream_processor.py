@@ -19,7 +19,9 @@ schema = StructType() \
     .add("longitude", DoubleType()) \
     .add("bearing_temp_f", DoubleType()) \
     .add("fuel_level_pct", DoubleType()) \
-    .add("status", StringType())
+    .add("status", StringType()) \
+    .add("experiment_id", StringType()) \
+    .add("variant_id", StringType())
 
 def main():
     # Kafka Configuration
@@ -62,15 +64,25 @@ def main():
         .select("data.*") \
         .withColumn("event_time", col("timestamp").cast(TimestampType()))
 
-    # Processing Logic 1: Maintenance Alerts (Rolling 10-minute Avg Temp > 140)
+    # Processing Logic 1: Experimentation Backbone (Dual-Model Alerts)
+    # We evaluate two different maintenance models in parallel.
     alerts_df = telemetry_df \
         .withWatermark("event_time", "5 minutes") \
         .groupBy(
             window(col("event_time"), "10 minutes", "5 minutes"),
-            col("train_id")
+            col("train_id"),
+            col("variant_id"),
+            col("experiment_id")
         ) \
-        .agg(avg("bearing_temp_f").alias("avg_temp")) \
-        .withColumn("is_alert", when(col("avg_temp") > 140.0, True).otherwise(False)) \
+        .agg(
+            avg("bearing_temp_f").alias("avg_temp"),
+            max("bearing_temp_f").alias("max_temp")
+        ) \
+        .withColumn("is_alert", 
+            when(col("variant_id") == "CONTROL", col("avg_temp") > 140.0)
+            .when(col("variant_id") == "TREATMENT", col("max_temp") > (col("avg_temp") * 1.1))
+            .otherwise(False)
+        ) \
         .withColumn("processed_at", current_timestamp())
 
     # Write Result 1: Delta Lake Silver Table (Raw Stream)

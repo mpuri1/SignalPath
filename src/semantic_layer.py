@@ -35,11 +35,13 @@ def main():
     alerts_df = spark.read.format("delta").load(gold_alerts_path)
 
     # 1. Experiment Performance Report
-    # We compare the alerting behavior of Variant A (Control) vs. Variant B (Treatment)
+    # We compare the alerting behavior and predictive risk of Variant A (Control) vs. Variant B (Treatment)
     experiment_summary = alerts_df.groupBy("variant_id").agg(
         count("*").alias("total_windows"),
         avg(col("is_alert").cast("int")).alias("alert_rate"),
         avg("avg_temp").alias("mean_window_temp"),
+        avg("predictive_failure_risk").alias("avg_predictive_risk"),
+        avg("risk_velocity").alias("avg_risk_velocity"),
         first("experiment_id").alias("experiment_id")
     )
 

@@ -29,6 +29,7 @@ def main():
     api_key = os.getenv('KAFKA_API_KEY')
     api_secret = os.getenv('KAFKA_API_SECRET')
     topic = "rail_telemetry"
+    window_duration_secs = 600.0  # 10-minute streaming window
 
     if not all([bootstrap_servers, api_key, api_secret]):
         print("❌ Missing Kafka credentials in .env. Falling back to debug mode.")
@@ -82,6 +83,12 @@ def main():
             when(col("variant_id") == "CONTROL", col("max_temp") > 140.0)
             .when(col("variant_id") == "TREATMENT", col("max_temp") > (col("avg_temp") * 1.1))
             .otherwise(False)
+        ) \
+        .withColumn("risk_velocity", (col("max_temp") - col("avg_temp")) / window_duration_secs) \
+        .withColumn("predictive_failure_risk", 
+            when(col("risk_velocity") > 0.05, 0.9) # High heating rate
+            .when(col("max_temp") > 130.0, 0.7)    # Pre-alert range
+            .otherwise(0.1)
         ) \
         .withColumn("processed_at", current_timestamp())
 

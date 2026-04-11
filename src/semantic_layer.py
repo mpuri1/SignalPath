@@ -41,7 +41,7 @@ def main():
         avg(col("is_alert").cast("int")).alias("alert_rate"),
         avg("avg_temp").alias("mean_window_temp"),
         avg("predictive_failure_risk").alias("avg_predictive_risk"),
-        avg("risk_velocity").alias("avg_risk_acceleration"),
+        avg("risk_velocity").alias("avg_risk_velocity"),
         first("experiment_id").alias("experiment_id")
     )
 

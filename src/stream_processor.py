@@ -83,6 +83,12 @@ def main():
             .when(col("variant_id") == "TREATMENT", col("max_temp") > (col("avg_temp") * 1.1))
             .otherwise(False)
         ) \
+        .withColumn("risk_velocity", (col("max_temp") - col("avg_temp")) / 600.0) \
+        .withColumn("predictive_failure_risk", 
+            when(col("risk_velocity") > 0.05, 0.9) # High heating rate
+            .when(col("max_temp") > 130.0, 0.7)    # Pre-alert range
+            .otherwise(0.1)
+        ) \
         .withColumn("processed_at", current_timestamp())
 
     # Write Result 1: Delta Lake Silver Table (Raw Stream)

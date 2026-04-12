@@ -44,3 +44,4 @@ Once Kafka credentials are set:
 - **Processing**: PySpark + Delta Lake
 - **Orchestration**: Apache Airflow
 - **Environment**: UV / Python 3.12
+
